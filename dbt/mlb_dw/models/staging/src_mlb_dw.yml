@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: mlb_dw
+    database: mlb_dw  
+    schema: public  
+    tables:
+      - name: game_data

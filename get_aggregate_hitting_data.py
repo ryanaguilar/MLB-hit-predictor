@@ -1,4 +1,5 @@
-from statcast_batter import statcast_batter
+#from statcast_batter import statcast_batter
+from pybaseball import statcast_batter
 from baseball_scraper import playerid_lookup
 import pandas as pd
 import numpy as np

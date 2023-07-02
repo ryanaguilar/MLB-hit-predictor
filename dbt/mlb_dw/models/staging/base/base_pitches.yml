@@ -1,0 +1,6 @@
+version: 2
+
+models:
+  - name: base_pitches
+    config:
+      tags: ['pitches']
