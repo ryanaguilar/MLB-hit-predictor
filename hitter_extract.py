@@ -29,18 +29,23 @@ def setup_db():
     connection.close()
     return database_connection
 
+def get_schedule():
+    r = requests.get(url='https://statsapi.mlb.com/api/v1/schedule?sportId=1&startDate=2023-03-30&endDate=2023-07-06')
+    r_json = r.json()
+    return r_json
+
 def extract_games(schedule: json) -> Generator[dict, None, None]:
     for date in schedule['dates']:
         for game in date['games']:
             yield {'date':date['date'], 'gamePk':game['gamePk']}
 
-def load_box_score(game_id: int, box_score_json, database_connection):
+def load_box_score(date: str, game_id: int, box_score_json, database_connection):
     players_list = []
     away_team = box_score_json['teams']['away']['players']
     home_team = box_score_json['teams']['home']['players']
    #both_teams = away_team + home_team
     for k,v in away_team.items():
-        players_list.append({'game':game_id, 'player_id':k,'all_data':v})
+        players_list.append({'date':date,'game':game_id, 'player_id':k,'all_data':v})
     with database_connection.connect() as connection:
         for player in players_list:
             register_adapter(dict,json)
