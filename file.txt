@@ -1,0 +1,16 @@
+
+conn = psycopg2.connect(dsn)
+with conn:
+    with conn.cursor() as curs:
+        curs.execute("SELECT * FROM box_score;")
+conn.close
+
+dsn = f'user={database_username},password={database_password}, host={database_ip},dbname={database_name}'
+print(dsn)
+
+resp = requests.get(url='https://statsapi.mlb.com/api/v1/game/381165/boxscore')
+boxscores_381165 = resp.json()
+players_game_381165 = boxscores_381165['teams']['away']['players']
+players_list = []
+for k,v in players_game_381165.items():
+    players_list.append(v)

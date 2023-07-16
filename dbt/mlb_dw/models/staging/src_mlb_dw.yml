@@ -3,6 +3,14 @@ version: 2
 sources:
   - name: mlb_dw
     database: mlb_dw  
-    schema: public  
+    schema: staging  
     tables:
       - name: game_data
+
+  - name: mlb_hp
+    database: mlb_dw  
+    schema: raw  
+    tables:
+      - name: game_data_2023
+      - name: box_scores
+      - name: statcast_plate_appearances

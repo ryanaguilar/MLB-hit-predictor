@@ -19,7 +19,7 @@ from pybaseball import statcast_single_game, statcast_pitcher, playerid_reverse_
 def setup_db():
     database_username = 'postgres'
     database_password = quote_plus("postgres")
-    database_ip       = '172.19.0.2'
+    database_ip       = '192.168.1.169:6543'
     database_name     = 'mlb_dw'
     database_engine = sqlalchemy.create_engine('postgresql+psycopg2://{0}:{1}@{2}/{3}?options=-csearch_path%3Ddbo,raw'.
                                                 format(database_username, database_password, 
@@ -58,17 +58,19 @@ def load_box_score(date: str, game_id: int, box_score_json, engine):
             player['stats'] = player['all_data']['stats']['batting']
             player['season_stats'] = player['all_data']['seasonStats']['batting']
             print(player['stats'])
+            print(date)
             table = "box_scores"
-            connection.execute(text(f"INSERT INTO {table} (date,game,player,v_stats, v_season_stats) VALUES ({date},{game_id}, {int(player['player_id'][2:8])}, '{json.dumps(player['stats'])}','{json.dumps(player['season_stats'])}')"))
+            connection.execute(text(f"INSERT INTO {table} (game_date,game,player,v_stats, v_season_stats) VALUES ('{date}',{game_id}, {int(player['player_id'][2:8])}, '{json.dumps(player['stats'])}','{json.dumps(player['season_stats'])}')"))
             connection.commit()
     connection.close()
 
 database_engine = setup_db()
 schedule_2023 = get_schedule()
 games_2023 = extract_games(schedule_2023)
+#subset = list(games_2023)[:2]
 
-
-for game in games_2023:
-    box_score = get_box_score(game['game_pk'])
-    load_box_score(game['date'], game['game_pk'],box_score,database_engine)
-    print(game['date'])
+def main():
+    for game in games_2023:
+        box_score = get_box_score(game['game_pk'])
+        load_box_score(game['date'], game['game_pk'],box_score,database_engine)
+        print(game['date'], game['game_pk'])
