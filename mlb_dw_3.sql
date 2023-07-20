@@ -50,7 +50,7 @@ limit 100
 )
 select * from renamed;
 
-select * from raw_stage.base_box_scores bbs limit 100;
+select * from raw_stage.base_box_scores bbs where game_date > '2023-06-01' limit 100;
 
 select * from raw_stage.stg_player_game_associations order by game_date, game limit 100;
 
@@ -74,7 +74,24 @@ select
 	k_player, 
 	game_date, 
 	hits,
-	next_game_hit
+	next_game_hit,
+	bip,
+	babip
 from 
-	raw_analytics.fct_player_game_association fpga  where k_player = '53db2f55b90e015a818999dd642908b3' order by game_date limit 100;
+	raw_analytics.fct_player_game_association fpga  
+where k_player = '53db2f55b90e015a818999dd642908b3' 
+or k_player = 'd3f4c38df608dedb21d5d1d67eafd1b1' 
+order by k_player, game_date limit 100;
 
+select * from raw_analytics.fct_pitch limit 100;
+
+select * from raw_analytics.fct_starting_pitcher limit 100;
+
+select 
+	max(game_date),
+	pitcher,
+	sum(batted_balls_total) as batted_balls
+from raw_analytics.msr_balls_batted
+group by pitcher;
+
+select * from raw_analytics.dim_pitcher_agg_wide limit 100;

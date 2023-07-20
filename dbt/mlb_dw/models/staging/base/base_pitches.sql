@@ -1,5 +1,5 @@
 with pitches as (
-  select * from {{ source('mlb_dw', 'game_data') }}
+  select * from {{ source('mlb_hp', 'game_data_2023') }}
 ),
 renamed as (
   select
