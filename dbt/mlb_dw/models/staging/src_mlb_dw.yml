@@ -14,3 +14,4 @@ sources:
       - name: game_data_2023
       - name: box_scores
       - name: statcast_plate_appearances
+      - name: box_scores_pitchers

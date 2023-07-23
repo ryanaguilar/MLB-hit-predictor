@@ -4,6 +4,7 @@ with fct_pitch as (
 starting_pitchers as (
 	select 
 		game_date,
+		game,
 		pitcher,
 		batter,
 		inning
