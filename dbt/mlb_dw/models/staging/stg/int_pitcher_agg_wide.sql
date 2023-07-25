@@ -7,7 +7,8 @@ counts as (
 		pitcher,
 		count(bb_type) as batted_balls_total,
         count(pitcher) filter (where bb_type = 'ground_ball') as ground_balls_total,
-        count(pitcher) filter (where events in ('single', 'double', 'triple', 'home_run')) as hits
+        count(pitcher) filter (where events in ('single', 'double', 'triple', 'home_run')) as hits,
+        count(pitcher) filter (where "description" = 'swinging_strike' ) as swinging_strikes
 	from stg_pitch
 	group by game_date, pitcher
 ),
@@ -21,7 +22,8 @@ aggregated as (
 			when sum(batted_balls_total) = 0 then 0
 			else sum(ground_balls_total)::float / sum(batted_balls_total)::float
 		end as ground_ball_pct,
-        sum(hits) as hits
+        sum(hits) as hits,
+        sum(swinging_strikes) as swinging_strikes
         
     from counts
     group by game_date, pitcher

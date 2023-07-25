@@ -55,7 +55,7 @@ select
     (v_stats ->> 'pitchesThrown')::int as pitches_thrown,
     (v_stats ->> 'balls')::int as balls,
     (v_stats ->> 'strikes')::int as strikes,
-    (v_stats ->> 'battersFaced'::int as batters_faced
+    (v_stats ->> 'battersFaced')::int as batters_faced
 from boxes
 )
 select * from renamed
