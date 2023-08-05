@@ -3,10 +3,12 @@ with stg_pitchers_boxes as (
 ),
 stg_pitchers_game_dates as (
     select * from {{ ref('stg_pitcher_game_date_wide') }}
-)
+),
+joined as (
 select
     spb.k_pitcher,
     spb.k_pitcher_date,
+    spb.game_date,
     spb.strike_outs,
     spb.batters_faced,
     spb.number_of_pitches,
@@ -33,3 +35,18 @@ select
 from stg_pitchers_boxes as spb
 join stg_pitchers_game_dates as wide
 on spb.k_pitcher_date = wide.k_pitcher_date
+),
+last_three as (
+select
+    *,
+    sum(hits) over (order by game_date rows between 3 preceding and current row) as last_three_hits,
+    sum(innings_pitched) over (order by game_date rows between 3 preceding and current row) as last_three_innings_pitched
+from joined
+)
+select
+    *,
+    case
+        when last_three_innings_pitched = 0 then 0
+        else last_three_hits / last_three_innings_pitched
+    end as last_three_hits_per_inning_pitched
+from last_three

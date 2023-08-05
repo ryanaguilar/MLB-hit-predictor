@@ -26,7 +26,7 @@ select
 	case
         when ((v_season_stats ->> 'babip')::varchar) = '.---' then '.000'
         else (v_season_stats ->> 'babip')::varchar
-    end::float as babip
+    end::float as sz_babip
 from boxes
 )
 select * from renamed
