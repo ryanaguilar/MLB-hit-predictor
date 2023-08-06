@@ -18,19 +18,25 @@ box_scores as (
 )
 select
     ng.k_batter,
+    bs.player,
     ng.k_date,
     ng.game_date,
     ng.next_game_starting_pitcher,
     ng.next_game_date,
     p.innings_pitched,
-    p.strike_out_pct,
-    p.ground_ball_pct,
-    p.swinging_strikes,
+    p.strike_out_pct as strikeout_percentage,
+    p.ground_ball_pct as ground_ball_percentage,
+    p.swinging_strikes as Strikes_Swinging,
     p.hits_per_inning_pitched,
-    p.pitchers_per_appearance,
+    p.pitchers_per_appearance as pitches_per_appearance_avg,
     bs.sz_babip as babip,
     bs.sz_avg as ba,
-    (bs.sz_at_bats - bs.sz_strike_outs - bs.sz_home_runs + bs.sz_sac_flies) as bip
+    (bs.sz_at_bats - bs.sz_strike_outs - bs.sz_home_runs + bs.sz_sac_flies) as bip,
+    p.last_three_innings_pitched as hip_last_three,
+    case
+        when lead(bs.current_game_hits) over (partition by bs.k_batter order by bs.game_date) > 0 then 1
+        else 0
+    end as nextgame_HIT
 from next_game as ng
 left join dim_pitcher as p
 on ng.next_game_date = p.game_date
